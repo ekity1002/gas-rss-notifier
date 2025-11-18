@@ -228,7 +228,38 @@ clasp logs
 
 重要なビジネスロジックに対するユニットテストが用意されています。
 
-GASエディタで `runAllTests` 関数を実行すると、全てのテストが実行されます：
+#### ローカル環境でテスト（推奨）
+
+vitestを使用して、高速にテストを実行できます：
+
+```bash
+# 依存パッケージをインストール
+npm install
+
+# テストを実行
+npm test
+
+# watchモードでテストを実行（開発時）
+npm run test:watch
+
+# カバレッジレポートを生成
+npm run test:coverage
+```
+
+実行例：
+
+```
+✓ __tests__/filter.test.ts (7 tests) 12ms
+✓ __tests__/summarizer.test.ts (6 tests) 8ms
+
+Test Files  2 passed (2)
+Tests  13 passed (13)
+Duration  235ms
+```
+
+#### GAS環境でテスト
+
+GASエディタで `runAllTests` 関数を実行すると、GAS環境でもテストが実行されます：
 
 ```
 ====================================
@@ -238,25 +269,9 @@ GASエディタで `runAllTests` 関数を実行すると、全てのテスト�
 === ArticleFilter ===
 ✓ should filter articles by keywords
 ✓ should filter articles by date
-✓ should filter articles by both keywords and date
-✓ should return all articles when keywords are empty
-✓ should return empty array when no articles match keywords
-✓ should be case-insensitive for keyword matching
+...
 
 結果: 6 passed, 0 failed
-
-=== SimpleSummarizer ===
-✓ should return short description as-is
-✓ should truncate long description
-✓ should clean up newlines and multiple spaces
-✓ should summarize multiple articles in batch
-✓ should handle empty description
-✓ should truncate Japanese text properly
-
-結果: 6 passed, 0 failed
-
-====================================
-全てのテストが完了しました (0.25秒)
 ====================================
 ```
 
