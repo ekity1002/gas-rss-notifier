@@ -1,0 +1,28 @@
+# Node modules
+node_modules/
+
+# clasp
+.clasprc.json
+
+# TypeScript
+*.js
+*.js.map
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment
+.env
+.env.local
