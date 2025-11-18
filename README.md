@@ -257,24 +257,6 @@ Tests  13 passed (13)
 Duration  235ms
 ```
 
-#### GAS環境でテスト
-
-GASエディタで `runAllTests` 関数を実行すると、GAS環境でもテストが実行されます：
-
-```
-====================================
-テストを開始します...
-====================================
-
-=== ArticleFilter ===
-✓ should filter articles by keywords
-✓ should filter articles by date
-...
-
-結果: 6 passed, 0 failed
-====================================
-```
-
 ## 拡張機能（今後の実装予定）
 
 - [ ] LLM APIによる高度な要約（Gemini、OpenAI）
