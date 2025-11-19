@@ -90,13 +90,6 @@ function main(): void {
     const notifiedIds = filteredArticles.map(a => a.id);
     articleRepository.markAsNotified(notifiedIds);
 
-    // 10. サマリーを送信
-    slackNotifier.sendSummaryMessage(
-      articles.length,
-      filteredArticles.length,
-      filteredArticles.length
-    );
-
     console.log('RSS通知処理が正常に完了しました');
   } catch (error) {
     console.error('エラーが発生しました:', error);
