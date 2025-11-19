@@ -201,10 +201,10 @@ function testFilter(): void {
 
 // GASのグローバル関数として公開
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-(global as any).main = main;
+(globalThis as any).main = main;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-(global as any).setupInitial = setupInitial;
+(globalThis as any).setupInitial = setupInitial;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-(global as any).testFetchRSS = testFetchRSS;
+(globalThis as any).testFetchRSS = testFetchRSS;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-(global as any).testFilter = testFilter;
+(globalThis as any).testFilter = testFilter;
