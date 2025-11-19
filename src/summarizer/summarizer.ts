@@ -1,4 +1,4 @@
-import { RSSArticle, ArticleRecord } from '../types';
+import { ArticleRecord, RSSArticle } from '../types';
 
 /**
  * 要約生成の基底インターフェース
@@ -98,7 +98,8 @@ export class LLMSummarizer implements ISummarizer {
    * プロンプトを構築
    */
   private buildPrompt(article: RSSArticle | ArticleRecord): string {
-    return `あなたはSNSマーケティングの専門家です。以下の記事を読んで、指定されたフォーマットで日本語の要約を作成してください。
+    return `あなたはSNSマーケティングの専門家です。弊社は、自社メディアのSNSアカウントや、顧客のSNSアカウントを運営しています。
+    以下の記事を読んで、指定されたフォーマットで日本語の要約を作成してください。
 
 # 記事情報
 タイトル: ${article.title}
@@ -108,15 +109,14 @@ URL: ${article.link}
 # 出力フォーマット
 以下のフォーマットで出力してください：
 
-📝要約
 {{記事の内容を簡潔に要約。重要なポイントを箇条書きまたは段落形式で記載}}
 
 💡SNS運営に影響しそうなポイント
-{{この記事がSNSマーケティングやSNS運営にどのような影響を与えるか、実務的な観点から分析}}
+{{この記事がSNSマーケティングやSNSのアカウント運営にどのような影響を与えるか、実務的な観点から分析}}
 
 # 注意事項
 - 要約は具体的で分かりやすく
-- SNS運営への影響は実務的な視点で記載
+- SNS運営への影響は実務的な視点で記載。
 - 日本語で出力
 - URLは出力に含めない（Slack通知で別途表示されるため）`;
   }
