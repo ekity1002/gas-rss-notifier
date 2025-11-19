@@ -41,17 +41,24 @@ export class ConfigManager {
       }
     }
 
+    // 機密情報はスクリプトプロパティから読み込む
+    const scriptProperties = PropertiesService.getScriptProperties();
+    const slackWebhookUrl = scriptProperties.getProperty('SLACK_WEBHOOK_URL') || '';
+    const errorSlackWebhookUrl = scriptProperties.getProperty('ERROR_SLACK_WEBHOOK_URL') || '';
+    const openaiApiKey = scriptProperties.getProperty('OPENAI_API_KEY') || '';
+
     this.config = {
       rssFeedUrl: configMap['RSS_FEED_URL'] || 'https://www.socialmediatoday.com/feeds/news/',
       spreadsheetId: this.spreadsheet.getId(),
       sheetName: configMap['SHEET_NAME'] || '記事一覧',
       filterKeywords: configMap['FILTER_KEYWORDS'] ? configMap['FILTER_KEYWORDS'].split(',').map(k => k.trim()) : [],
       maxArticleAgeDays: parseInt(configMap['MAX_ARTICLE_AGE_DAYS'] || '7', 10),
-      slackWebhookUrl: configMap['SLACK_WEBHOOK_URL'] || '',
+      slackWebhookUrl: slackWebhookUrl,
+      errorSlackWebhookUrl: errorSlackWebhookUrl,
       summaryEnabled: configMap['SUMMARY_ENABLED'] === 'true',
       summaryMaxLength: parseInt(configMap['SUMMARY_MAX_LENGTH'] || '200', 10),
       summaryType: (configMap['SUMMARY_TYPE'] === 'openai' ? 'openai' : 'simple') as 'simple' | 'openai',
-      openaiApiKey: configMap['OPENAI_API_KEY'] || '',
+      openaiApiKey: openaiApiKey,
       openaiModel: configMap['OPENAI_MODEL'] || 'gpt-4o-mini',
     };
 
@@ -82,11 +89,12 @@ export class ConfigManager {
       ['SHEET_NAME', '記事一覧', '記事を保存するシート名'],
       ['FILTER_KEYWORDS', 'social media,marketing,instagram,facebook,twitter,tiktok', 'フィルタリングキーワード（カンマ区切り）'],
       ['MAX_ARTICLE_AGE_DAYS', '7', '取得する記事の最大経過日数'],
-      ['SLACK_WEBHOOK_URL', '', 'SlackのIncoming Webhook URL'],
+      ['SLACK_WEBHOOK_URL', '※スクリプトプロパティから読み取り', '【重要】値はスプレッドシートではなくスクリプトプロパティに設定してください'],
+      ['ERROR_SLACK_WEBHOOK_URL', '※スクリプトプロパティから読み取り', '【重要】値はスプレッドシートではなくスクリプトプロパティに設定してください（省略時はエラー通知を送信しません）'],
       ['SUMMARY_ENABLED', 'true', '要約機能の有効化（true/false）'],
       ['SUMMARY_MAX_LENGTH', '200', '要約の最大文字数（simpleモードのみ使用）'],
       ['SUMMARY_TYPE', 'openai', '要約タイプ（simple/openai）'],
-      ['OPENAI_API_KEY', '', 'OpenAI API Key（openaiモード使用時に必須）'],
+      ['OPENAI_API_KEY', '※スクリプトプロパティから読み取り', '【重要】値はスプレッドシートではなくスクリプトプロパティに設定してください'],
       ['OPENAI_MODEL', 'gpt-4o-mini', 'OpenAIモデル名（gpt-4o-mini, gpt-4o等）'],
     ];
 
@@ -99,7 +107,7 @@ export class ConfigManager {
     // 列幅を調整
     sheet.setColumnWidth(1, 200);
     sheet.setColumnWidth(2, 300);
-    sheet.setColumnWidth(3, 350);
+    sheet.setColumnWidth(3, 400);
   }
 
   /**

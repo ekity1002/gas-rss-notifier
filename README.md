@@ -94,7 +94,14 @@ clasp push
 1. Slack ワークスペースで [Incoming Webhooks](https://api.slack.com/messaging/webhooks) を設定
 2. 通知先チャンネルを選択してWebhook URLを取得
 
-### 6. 初期設定
+### 6. OpenAI API Keyの取得（オプション）
+
+OpenAI要約機能を使う場合：
+
+1. [OpenAI Platform](https://platform.openai.com/) でアカウント作成
+2. API Keys → Create new secret key で API Key を取得
+
+### 7. 初期設定
 
 1. GASエディタを開く：
    ```bash
@@ -103,12 +110,28 @@ clasp push
 
 2. `setupInitial` 関数を実行して設定シートを作成
 
-3. スプレッドシートで「設定」シートを開き、以下を設定：
+3. **スクリプトプロパティの設定（機密情報）**:
+
+   GASエディタ → ⚙️ プロジェクトの設定 → スクリプト プロパティで以下を追加：
+
    - `SLACK_WEBHOOK_URL`: Slack Webhook URL
+   - `ERROR_SLACK_WEBHOOK_URL`: エラー通知用Webhook URL（オプション）
+   - `OPENAI_API_KEY`: OpenAI API Key（オプション）
+
+   または、claspコマンドで設定：
+   ```bash
+   clasp setting scriptProperty SLACK_WEBHOOK_URL "https://hooks.slack.com/services/..."
+   clasp setting scriptProperty OPENAI_API_KEY "sk-..."
+   ```
+
+4. **スプレッドシートでの設定**:
+
+   「設定」シートを開き、以下を設定：
    - `FILTER_KEYWORDS`: フィルタリングキーワード（カンマ区切り）
+   - `SUMMARY_TYPE`: `openai` または `simple`
    - その他の設定を必要に応じて調整
 
-### 7. 動作確認
+### 8. 動作確認
 
 #### テスト実行
 
@@ -127,7 +150,7 @@ clasp push
    GASエディタで main() を実行
    ```
 
-### 8. 定期実行の設定
+### 9. 定期実行の設定
 
 GASエディタで時間トリガーを設定します：
 
@@ -138,6 +161,22 @@ GASエディタで時間トリガーを設定します：
 
 ## 設定項目
 
+### スクリプトプロパティ（機密情報）
+
+以下の設定は、GASのスクリプトプロパティで管理します：
+
+| プロパティ名 | 説明 |
+|------------|------|
+| SLACK_WEBHOOK_URL | SlackのIncoming Webhook URL（記事通知用） |
+| ERROR_SLACK_WEBHOOK_URL | エラー通知用Webhook URL（省略時はエラー通知を送信しません） |
+| OPENAI_API_KEY | OpenAI API Key（openaiモード時に必須） |
+
+**設定方法**:
+- GASエディタ → ⚙️ プロジェクトの設定 → スクリプト プロパティ
+- または `clasp setting scriptProperty <KEY> "<VALUE>"`
+
+### スプレッドシート設定
+
 スプレッドシートの「設定」シートで以下の項目を設定できます：
 
 | 設定キー | デフォルト値 | 説明 |
@@ -146,11 +185,9 @@ GASエディタで時間トリガーを設定します：
 | SHEET_NAME | 記事一覧 | 記事を保存するシート名 |
 | FILTER_KEYWORDS | social media,marketing,... | フィルタリングキーワード（カンマ区切り） |
 | MAX_ARTICLE_AGE_DAYS | 7 | 取得する記事の最大経過日数 |
-| SLACK_WEBHOOK_URL | (空) | SlackのIncoming Webhook URL |
 | SUMMARY_ENABLED | true | 要約機能の有効化 |
 | SUMMARY_MAX_LENGTH | 200 | 要約の最大文字数（simpleモード時） |
 | SUMMARY_TYPE | openai | 要約タイプ（simple/openai） |
-| OPENAI_API_KEY | (空) | OpenAI API Key（openaiモード時に必須） |
 | OPENAI_MODEL | gpt-4o-mini | OpenAIモデル名（gpt-4o-mini, gpt-4o等） |
 
 ## 機能詳細

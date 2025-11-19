@@ -180,18 +180,39 @@ export class SlackNotifier {
    */
   public sendErrorMessage(errorMessage: string): void {
     if (!this.webhookUrl) {
+      console.warn('エラー通知用Webhook URLが設定されていません');
       return;
     }
 
     const message: SlackMessage = {
-      text: 'RSS通知エラー',
+      text: '🚨 RSS通知システムでエラーが発生しました',
       blocks: [
+        {
+          type: 'header',
+          text: {
+            type: 'plain_text',
+            text: '🚨 RSS通知システムエラー',
+            emoji: true,
+          },
+        },
         {
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `*⚠️ RSS通知エラー*\n\n${errorMessage}`,
+            text: errorMessage,
           },
+        },
+        {
+          type: 'context',
+          elements: [
+            {
+              type: 'mrkdwn',
+              text: '⚠️ この問題を解決するまで、RSS通知が正常に動作しない可能性があります。',
+            },
+          ],
+        },
+        {
+          type: 'divider',
         },
       ],
     };
