@@ -63,40 +63,112 @@ export class SimpleSummarizer implements ISummarizer {
 }
 
 /**
- * LLM要約クラス（将来実装用のスケルトン）
- * Gemini APIやOpenAI APIを使った要約を実装する想定
+ * OpenAI API要約クラス
+ * OpenAI APIを使ってSNS運営視点の要約を生成
  */
 export class LLMSummarizer implements ISummarizer {
   private apiKey: string;
+  private model: string;
   private endpoint: string;
 
-  constructor(apiKey: string, endpoint: string = '') {
+  constructor(apiKey: string, model: string = 'gpt-4o-mini') {
     this.apiKey = apiKey;
-    this.endpoint = endpoint;
+    this.model = model;
+    this.endpoint = 'https://api.openai.com/v1/chat/completions';
   }
 
   /**
-   * LLMを使って記事を要約（未実装）
+   * OpenAI APIを使って記事を要約
    */
   public summarize(article: RSSArticle | ArticleRecord, maxLength: number = 200): string {
-    // TODO: LLM APIを呼び出して要約を生成
-    // 例: Gemini API, OpenAI API, Claude APIなど
-
-    console.warn('LLMSummarizer is not implemented yet. Falling back to SimpleSummarizer.');
-    const simpleSummarizer = new SimpleSummarizer();
-    return simpleSummarizer.summarize(article, maxLength);
+    try {
+      const prompt = this.buildPrompt(article);
+      const response = this.callOpenAI(prompt);
+      return this.formatSummary(article, response);
+    } catch (error) {
+      console.error('OpenAI API呼び出しエラー:', error);
+      // フォールバック: SimpleSummarizerを使用
+      console.warn('SimpleSummarizerにフォールバックします');
+      const simpleSummarizer = new SimpleSummarizer();
+      return simpleSummarizer.summarize(article, maxLength);
+    }
   }
 
   /**
    * プロンプトを構築
    */
   private buildPrompt(article: RSSArticle | ArticleRecord): string {
-    return `以下の記事を日本語で${200}文字程度で要約してください。
+    return `あなたはSNSマーケティングの専門家です。以下の記事を読んで、指定されたフォーマットで日本語の要約を作成してください。
 
+# 記事情報
 タイトル: ${article.title}
+URL: ${article.link}
 内容: ${article.description}
 
-要約:`;
+# 出力フォーマット
+以下のフォーマットで出力してください：
+
+📝要約
+{{記事の内容を簡潔に要約。重要なポイントを箇条書きまたは段落形式で記載}}
+
+💡SNS運営に影響しそうなポイント
+{{この記事がSNSマーケティングやSNS運営にどのような影響を与えるか、実務的な観点から分析}}
+
+# 注意事項
+- 要約は具体的で分かりやすく
+- SNS運営への影響は実務的な視点で記載
+- 日本語で出力
+- URLは出力に含めない（Slack通知で別途表示されるため）`;
+  }
+
+  /**
+   * OpenAI APIを呼び出す
+   */
+  private callOpenAI(prompt: string): string {
+    const payload = {
+      model: this.model,
+      messages: [
+        {
+          role: 'user',
+          content: prompt,
+        },
+      ],
+      temperature: 0.7,
+      max_tokens: 1000,
+    };
+
+    const options: GoogleAppsScript.URL_Fetch.URLFetchRequestOptions = {
+      method: 'post',
+      contentType: 'application/json',
+      headers: {
+        'Authorization': `Bearer ${this.apiKey}`,
+      },
+      payload: JSON.stringify(payload),
+      muteHttpExceptions: true,
+    };
+
+    const response = UrlFetchApp.fetch(this.endpoint, options);
+    const statusCode = response.getResponseCode();
+
+    if (statusCode !== 200) {
+      throw new Error(`OpenAI API returned status ${statusCode}: ${response.getContentText()}`);
+    }
+
+    const jsonResponse = JSON.parse(response.getContentText());
+
+    if (!jsonResponse.choices || jsonResponse.choices.length === 0) {
+      throw new Error('OpenAI APIからの応答が空です');
+    }
+
+    return jsonResponse.choices[0].message.content;
+  }
+
+  /**
+   * 要約をフォーマット
+   */
+  private formatSummary(article: RSSArticle | ArticleRecord, aiResponse: string): string {
+    // AIの応答をそのまま返す（既に指定フォーマットで生成されている）
+    return aiResponse.trim();
   }
 }
 

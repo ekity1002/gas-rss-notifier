@@ -2,7 +2,7 @@ import { ConfigManager } from './config';
 import { RSSFetcher } from './rss/fetcher';
 import { ArticleRepository } from './spreadsheet/repository';
 import { ArticleFilter } from './filter/filter';
-import { SimpleSummarizer } from './summarizer/summarizer';
+import { SimpleSummarizer, LLMSummarizer, ISummarizer } from './summarizer/summarizer';
 import { SlackNotifier } from './notification/slack';
 
 /**
@@ -27,7 +27,20 @@ function main(): void {
       config.sheetName
     );
     const articleFilter = new ArticleFilter();
-    const summarizer = new SimpleSummarizer();
+
+    // 設定に応じて要約エンジンを選択
+    let summarizer: ISummarizer;
+    if (config.summaryType === 'openai' && config.openaiApiKey) {
+      console.log(`要約エンジン: OpenAI (${config.openaiModel})`);
+      summarizer = new LLMSummarizer(config.openaiApiKey, config.openaiModel);
+    } else {
+      if (config.summaryType === 'openai' && !config.openaiApiKey) {
+        console.warn('OpenAI API Keyが設定されていません。SimpleSummarizerを使用します。');
+      }
+      console.log('要約エンジン: SimpleSummarizer');
+      summarizer = new SimpleSummarizer();
+    }
+
     const slackNotifier = new SlackNotifier(config.slackWebhookUrl);
 
     // Slack Webhook URLの検証

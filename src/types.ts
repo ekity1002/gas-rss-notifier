@@ -39,6 +39,11 @@ export interface AppConfig {
   // 要約設定
   summaryEnabled: boolean;
   summaryMaxLength: number;
+  summaryType: 'simple' | 'openai';
+
+  // OpenAI設定
+  openaiApiKey: string;
+  openaiModel: string;
 }
 
 /**

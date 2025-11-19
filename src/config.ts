@@ -50,6 +50,9 @@ export class ConfigManager {
       slackWebhookUrl: configMap['SLACK_WEBHOOK_URL'] || '',
       summaryEnabled: configMap['SUMMARY_ENABLED'] === 'true',
       summaryMaxLength: parseInt(configMap['SUMMARY_MAX_LENGTH'] || '200', 10),
+      summaryType: (configMap['SUMMARY_TYPE'] === 'openai' ? 'openai' : 'simple') as 'simple' | 'openai',
+      openaiApiKey: configMap['OPENAI_API_KEY'] || '',
+      openaiModel: configMap['OPENAI_MODEL'] || 'gpt-4o-mini',
     };
 
     return this.config;
@@ -81,7 +84,10 @@ export class ConfigManager {
       ['MAX_ARTICLE_AGE_DAYS', '7', '取得する記事の最大経過日数'],
       ['SLACK_WEBHOOK_URL', '', 'SlackのIncoming Webhook URL'],
       ['SUMMARY_ENABLED', 'true', '要約機能の有効化（true/false）'],
-      ['SUMMARY_MAX_LENGTH', '200', '要約の最大文字数'],
+      ['SUMMARY_MAX_LENGTH', '200', '要約の最大文字数（simpleモードのみ使用）'],
+      ['SUMMARY_TYPE', 'openai', '要約タイプ（simple/openai）'],
+      ['OPENAI_API_KEY', '', 'OpenAI API Key（openaiモード使用時に必須）'],
+      ['OPENAI_MODEL', 'gpt-4o-mini', 'OpenAIモデル名（gpt-4o-mini, gpt-4o等）'],
     ];
 
     sheet.getRange(1, 1, 1, 3).setValues(headers);
