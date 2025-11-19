@@ -168,7 +168,7 @@ GASエディタで時間トリガーを設定します：
 | プロパティ名 | 説明 |
 |------------|------|
 | SLACK_WEBHOOK_URL | SlackのIncoming Webhook URL（記事通知用） |
-| ERROR_SLACK_WEBHOOK_URL | エラー通知用Webhook URL（省略時はSLACK_WEBHOOK_URLと同じ） |
+| ERROR_SLACK_WEBHOOK_URL | エラー通知用Webhook URL（省略時はエラー通知を送信しません） |
 | OPENAI_API_KEY | OpenAI API Key（openaiモード時に必須） |
 
 **設定方法**:

@@ -113,19 +113,23 @@ function main(): void {
       console.error('スタックトレース:', errorStack);
     }
 
-    // エラーをSlackに通知
+    // エラーをSlackに通知（エラー通知用Webhook URLが設定されている場合のみ）
     try {
       const configManager = new ConfigManager();
       const config = configManager.loadConfig();
 
-      // エラー通知専用のWebhook URLを使用（未設定なら通常のURLを使用）
-      const errorNotifier = new SlackNotifier(config.errorSlackWebhookUrl);
+      if (config.errorSlackWebhookUrl) {
+        // エラー通知専用のWebhook URLを使用
+        const errorNotifier = new SlackNotifier(config.errorSlackWebhookUrl);
 
-      // 詳細なエラー情報を構築
-      const detailedError = `**エラーメッセージ:**\n${errorMessage}\n\n**発生時刻:**\n${new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' })}${errorStack ? `\n\n**スタックトレース:**\n\`\`\`\n${errorStack.substring(0, 500)}\n\`\`\`` : ''}`;
+        // 詳細なエラー情報を構築
+        const detailedError = `**エラーメッセージ:**\n${errorMessage}\n\n**発生時刻:**\n${new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' })}${errorStack ? `\n\n**スタックトレース:**\n\`\`\`\n${errorStack.substring(0, 500)}\n\`\`\`` : ''}`;
 
-      errorNotifier.sendErrorMessage(detailedError);
-      console.log('エラー通知をSlackに送信しました');
+        errorNotifier.sendErrorMessage(detailedError);
+        console.log('エラー通知をSlackに送信しました');
+      } else {
+        console.log('エラー通知用Webhook URLが設定されていないため、Slack通知をスキップします');
+      }
     } catch (notifyError) {
       console.error('エラー通知の送信に失敗しました:', notifyError);
     }

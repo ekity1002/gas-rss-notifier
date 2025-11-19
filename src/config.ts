@@ -44,7 +44,7 @@ export class ConfigManager {
     // 機密情報はスクリプトプロパティから読み込む
     const scriptProperties = PropertiesService.getScriptProperties();
     const slackWebhookUrl = scriptProperties.getProperty('SLACK_WEBHOOK_URL') || '';
-    const errorSlackWebhookUrl = scriptProperties.getProperty('ERROR_SLACK_WEBHOOK_URL') || slackWebhookUrl;
+    const errorSlackWebhookUrl = scriptProperties.getProperty('ERROR_SLACK_WEBHOOK_URL') || '';
     const openaiApiKey = scriptProperties.getProperty('OPENAI_API_KEY') || '';
 
     this.config = {
@@ -90,7 +90,7 @@ export class ConfigManager {
       ['FILTER_KEYWORDS', 'social media,marketing,instagram,facebook,twitter,tiktok', 'フィルタリングキーワード（カンマ区切り）'],
       ['MAX_ARTICLE_AGE_DAYS', '7', '取得する記事の最大経過日数'],
       ['SLACK_WEBHOOK_URL', '※スクリプトプロパティから読み取り', '【重要】値はスプレッドシートではなくスクリプトプロパティに設定してください'],
-      ['ERROR_SLACK_WEBHOOK_URL', '※スクリプトプロパティから読み取り', '【重要】値はスプレッドシートではなくスクリプトプロパティに設定してください（省略時はSLACK_WEBHOOK_URLと同じ）'],
+      ['ERROR_SLACK_WEBHOOK_URL', '※スクリプトプロパティから読み取り', '【重要】値はスプレッドシートではなくスクリプトプロパティに設定してください（省略時はエラー通知を送信しません）'],
       ['SUMMARY_ENABLED', 'true', '要約機能の有効化（true/false）'],
       ['SUMMARY_MAX_LENGTH', '200', '要約の最大文字数（simpleモードのみ使用）'],
       ['SUMMARY_TYPE', 'openai', '要約タイプ（simple/openai）'],
