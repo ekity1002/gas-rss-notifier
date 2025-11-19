@@ -41,13 +41,17 @@ export class ConfigManager {
       }
     }
 
+    const slackWebhookUrl = configMap['SLACK_WEBHOOK_URL'] || '';
+    const errorSlackWebhookUrl = configMap['ERROR_SLACK_WEBHOOK_URL'] || slackWebhookUrl;
+
     this.config = {
       rssFeedUrl: configMap['RSS_FEED_URL'] || 'https://www.socialmediatoday.com/feeds/news/',
       spreadsheetId: this.spreadsheet.getId(),
       sheetName: configMap['SHEET_NAME'] || '記事一覧',
       filterKeywords: configMap['FILTER_KEYWORDS'] ? configMap['FILTER_KEYWORDS'].split(',').map(k => k.trim()) : [],
       maxArticleAgeDays: parseInt(configMap['MAX_ARTICLE_AGE_DAYS'] || '7', 10),
-      slackWebhookUrl: configMap['SLACK_WEBHOOK_URL'] || '',
+      slackWebhookUrl: slackWebhookUrl,
+      errorSlackWebhookUrl: errorSlackWebhookUrl,
       summaryEnabled: configMap['SUMMARY_ENABLED'] === 'true',
       summaryMaxLength: parseInt(configMap['SUMMARY_MAX_LENGTH'] || '200', 10),
       summaryType: (configMap['SUMMARY_TYPE'] === 'openai' ? 'openai' : 'simple') as 'simple' | 'openai',
@@ -82,7 +86,8 @@ export class ConfigManager {
       ['SHEET_NAME', '記事一覧', '記事を保存するシート名'],
       ['FILTER_KEYWORDS', 'social media,marketing,instagram,facebook,twitter,tiktok', 'フィルタリングキーワード（カンマ区切り）'],
       ['MAX_ARTICLE_AGE_DAYS', '7', '取得する記事の最大経過日数'],
-      ['SLACK_WEBHOOK_URL', '', 'SlackのIncoming Webhook URL'],
+      ['SLACK_WEBHOOK_URL', '', 'SlackのIncoming Webhook URL（記事通知用）'],
+      ['ERROR_SLACK_WEBHOOK_URL', '', 'エラー通知用Webhook URL（省略時は上記と同じ）'],
       ['SUMMARY_ENABLED', 'true', '要約機能の有効化（true/false）'],
       ['SUMMARY_MAX_LENGTH', '200', '要約の最大文字数（simpleモードのみ使用）'],
       ['SUMMARY_TYPE', 'openai', '要約タイプ（simple/openai）'],

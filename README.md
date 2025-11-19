@@ -146,7 +146,8 @@ GASエディタで時間トリガーを設定します：
 | SHEET_NAME | 記事一覧 | 記事を保存するシート名 |
 | FILTER_KEYWORDS | social media,marketing,... | フィルタリングキーワード（カンマ区切り） |
 | MAX_ARTICLE_AGE_DAYS | 7 | 取得する記事の最大経過日数 |
-| SLACK_WEBHOOK_URL | (空) | SlackのIncoming Webhook URL |
+| SLACK_WEBHOOK_URL | (空) | SlackのIncoming Webhook URL（記事通知用） |
+| ERROR_SLACK_WEBHOOK_URL | (空) | エラー通知用Webhook URL（省略時は上記と同じ） |
 | SUMMARY_ENABLED | true | 要約機能の有効化 |
 | SUMMARY_MAX_LENGTH | 200 | 要約の最大文字数（simpleモード時） |
 | SUMMARY_TYPE | openai | 要約タイプ（simple/openai） |

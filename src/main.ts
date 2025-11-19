@@ -105,14 +105,27 @@ function main(): void {
 
     console.log('RSS通知処理が正常に完了しました');
   } catch (error) {
-    console.error('エラーが発生しました:', error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorStack = error instanceof Error ? error.stack : '';
+
+    console.error('エラーが発生しました:', errorMessage);
+    if (errorStack) {
+      console.error('スタックトレース:', errorStack);
+    }
 
     // エラーをSlackに通知
     try {
       const configManager = new ConfigManager();
       const config = configManager.loadConfig();
-      const slackNotifier = new SlackNotifier(config.slackWebhookUrl);
-      slackNotifier.sendErrorMessage(String(error));
+
+      // エラー通知専用のWebhook URLを使用（未設定なら通常のURLを使用）
+      const errorNotifier = new SlackNotifier(config.errorSlackWebhookUrl);
+
+      // 詳細なエラー情報を構築
+      const detailedError = `**エラーメッセージ:**\n${errorMessage}\n\n**発生時刻:**\n${new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' })}${errorStack ? `\n\n**スタックトレース:**\n\`\`\`\n${errorStack.substring(0, 500)}\n\`\`\`` : ''}`;
+
+      errorNotifier.sendErrorMessage(detailedError);
+      console.log('エラー通知をSlackに送信しました');
     } catch (notifyError) {
       console.error('エラー通知の送信に失敗しました:', notifyError);
     }

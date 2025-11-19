@@ -169,7 +169,8 @@ GASエディタから、またはGoogle Driveからスプレッドシートを�
 
 | 設定キー | 設定する値 | 備考 |
 |---------|----------|------|
-| SLACK_WEBHOOK_URL | `https://hooks.slack.com/services/...` | ステップ3で取得したURL |
+| SLACK_WEBHOOK_URL | `https://hooks.slack.com/services/...` | ステップ3で取得したURL（記事通知用） |
+| ERROR_SLACK_WEBHOOK_URL | （省略可） | エラー通知用のWebhook URL |
 | RSS_FEED_URL | `https://www.socialmediatoday.com/feeds/news/` | またはお好みのRSS URL |
 | FILTER_KEYWORDS | `social media,marketing,instagram` | 関連キーワードをカンマ区切りで |
 | MAX_ARTICLE_AGE_DAYS | `7` | 過去何日分の記事を取得するか |
@@ -177,6 +178,11 @@ GASエディタから、またはGoogle Driveからスプレッドシートを�
 | SUMMARY_TYPE | `openai` | 要約タイプ（`openai`または`simple`） |
 | OPENAI_API_KEY | `sk-...` | ステップ4で取得したOpenAI API Key |
 | OPENAI_MODEL | `gpt-4o-mini` | 使用するモデル（`gpt-4o-mini`, `gpt-4o`等） |
+
+**エラー通知チャネルについて**:
+- `ERROR_SLACK_WEBHOOK_URL`を設定すると、システムエラーを別チャネルに通知できます
+- 省略した場合は`SLACK_WEBHOOK_URL`と同じチャネルに送信されます
+- エラー通知には、エラーメッセージ、発生時刻、スタックトレースが含まれます
 
 **要約タイプについて**:
 - `openai`: OpenAI APIを使ったSNS運営視点の要約（推奨）

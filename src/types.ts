@@ -35,6 +35,7 @@ export interface AppConfig {
 
   // Slack設定
   slackWebhookUrl: string;
+  errorSlackWebhookUrl: string;  // エラー通知用（オプション）
 
   // 要約設定
   summaryEnabled: boolean;
