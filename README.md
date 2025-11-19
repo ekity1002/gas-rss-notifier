@@ -148,7 +148,10 @@ GASエディタで時間トリガーを設定します：
 | MAX_ARTICLE_AGE_DAYS | 7 | 取得する記事の最大経過日数 |
 | SLACK_WEBHOOK_URL | (空) | SlackのIncoming Webhook URL |
 | SUMMARY_ENABLED | true | 要約機能の有効化 |
-| SUMMARY_MAX_LENGTH | 200 | 要約の最大文字数 |
+| SUMMARY_MAX_LENGTH | 200 | 要約の最大文字数（simpleモード時） |
+| SUMMARY_TYPE | openai | 要約タイプ（simple/openai） |
+| OPENAI_API_KEY | (空) | OpenAI API Key（openaiモード時に必須） |
+| OPENAI_MODEL | gpt-4o-mini | OpenAIモデル名（gpt-4o-mini, gpt-4o等） |
 
 ## 機能詳細
 
@@ -172,9 +175,16 @@ GASエディタで時間トリガーを設定します：
 
 ### 要約生成
 
-- ルールベースの要約（初期実装）
+**OpenAI API要約（推奨）**:
+- OpenAI APIを使ったSNS運営視点の要約生成
+- 📝要約: 記事内容を簡潔に要約
+- 💡SNS運営に影響しそうなポイント: SNSマーケティングへの影響を分析
+- デフォルトモデル: gpt-4o-mini（設定で変更可能）
+
+**シンプル要約（フォールバック）**:
+- ルールベースの簡易要約
 - 文字数制限と自然な文末処理
-- LLM API対応の拡張可能な設計
+- OpenAI APIキーが未設定の場合に自動使用
 
 ### Slack通知
 
