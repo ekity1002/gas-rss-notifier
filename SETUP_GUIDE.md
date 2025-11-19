@@ -157,27 +157,66 @@ GASエディタで：
 スプレッドシートIDをメモしてください: XXXXX...
 ```
 
-## ステップ7: スプレッドシートでの設定
+## ステップ7: スクリプトプロパティの設定（機密情報）
 
-### 7-1. スプレッドシートを開く
+セキュリティのため、APIキーやWebhook URLはスプレッドシートではなく、GASのスクリプトプロパティに保存します。
+
+### 7-1. GASエディタでスクリプトプロパティを設定（推奨）
+
+1. GASエディタを開く（`clasp open`または手動で開く）
+2. 左メニューの「⚙️ プロジェクトの設定」をクリック
+3. 下にスクロールして「スクリプト プロパティ」セクションを表示
+4. 「スクリプト プロパティを追加」をクリック
+5. 以下の3つのプロパティを追加：
+
+| プロパティ | 値 |
+|-----------|-----|
+| `SLACK_WEBHOOK_URL` | `https://hooks.slack.com/services/...` （ステップ3で取得） |
+| `ERROR_SLACK_WEBHOOK_URL` | （省略可）エラー通知用のWebhook URL |
+| `OPENAI_API_KEY` | `sk-...` （ステップ4で取得） |
+
+6. 「スクリプト プロパティを保存」をクリック
+
+### 7-2. claspコマンドで設定（代替方法）
+
+ターミナルから以下のコマンドを実行：
+
+```bash
+# Slack Webhook URL を設定
+clasp setting scriptProperty SLACK_WEBHOOK_URL "https://hooks.slack.com/services/YOUR_WEBHOOK_URL"
+
+# エラー通知用Webhook URL を設定（省略可）
+clasp setting scriptProperty ERROR_SLACK_WEBHOOK_URL "https://hooks.slack.com/services/YOUR_ERROR_WEBHOOK_URL"
+
+# OpenAI API Key を設定
+clasp setting scriptProperty OPENAI_API_KEY "sk-YOUR_OPENAI_API_KEY"
+```
+
+**重要事項**:
+- ⚠️ これらの値は絶対にGitにコミットしないでください
+- ⚠️ スクリプトプロパティは暗号化されて保存されます
+- ⚠️ スプレッドシートには表示されません（セキュリティ向上）
+
+## ステップ8: スプレッドシートでの設定
+
+### 8-1. スプレッドシートを開く
 
 GASエディタから、またはGoogle Driveからスプレッドシートを開きます。
 
-### 7-2. 「設定」シートで設定を編集
+### 8-2. 「設定」シートで設定を編集
 
 以下の設定を入力します：
 
 | 設定キー | 設定する値 | 備考 |
 |---------|----------|------|
-| SLACK_WEBHOOK_URL | `https://hooks.slack.com/services/...` | ステップ3で取得したURL（記事通知用） |
-| ERROR_SLACK_WEBHOOK_URL | （省略可） | エラー通知用のWebhook URL |
 | RSS_FEED_URL | `https://www.socialmediatoday.com/feeds/news/` | またはお好みのRSS URL |
 | FILTER_KEYWORDS | `social media,marketing,instagram` | 関連キーワードをカンマ区切りで |
 | MAX_ARTICLE_AGE_DAYS | `7` | 過去何日分の記事を取得するか |
 | SUMMARY_ENABLED | `true` | 要約機能を使うか |
 | SUMMARY_TYPE | `openai` | 要約タイプ（`openai`または`simple`） |
-| OPENAI_API_KEY | `sk-...` | ステップ4で取得したOpenAI API Key |
 | OPENAI_MODEL | `gpt-4o-mini` | 使用するモデル（`gpt-4o-mini`, `gpt-4o`等） |
+
+**注意**: `SLACK_WEBHOOK_URL`、`ERROR_SLACK_WEBHOOK_URL`、`OPENAI_API_KEY`は、スプレッドシートには設定せず、ステップ7で設定したスクリプトプロパティから読み取られます。
 
 **エラー通知チャネルについて**:
 - `ERROR_SLACK_WEBHOOK_URL`を設定すると、システムエラーを別チャネルに通知できます
@@ -188,9 +227,9 @@ GASエディタから、またはGoogle Driveからスプレッドシートを�
 - `openai`: OpenAI APIを使ったSNS運営視点の要約（推奨）
 - `simple`: ルールベースの簡易要約（APIキー不要）
 
-## ステップ8: 動作テスト
+## ステップ9: 動作テスト
 
-### 8-1. RSS取得テスト
+### 9-1. RSS取得テスト
 
 GASエディタで `testFetchRSS` 関数を実行：
 
@@ -203,7 +242,7 @@ RSS取得テストを開始します...
 ...
 ```
 
-### 8-2. フィルタテスト
+### 9-2. フィルタテスト
 
 GASエディタで `testFilter` 関数を実行：
 
@@ -214,7 +253,7 @@ GASエディタで `testFilter` 関数を実行：
 フィルタキーワード: social media,marketing,instagram
 ```
 
-### 8-3. 本番実行テスト
+### 9-3. 本番実行テスト
 
 GASエディタで `main` 関数を実行：
 
@@ -230,9 +269,9 @@ RSS通知処理が正常に完了しました
 
 Slackの指定チャンネルに通知が届いているか確認してください。
 
-## ステップ9: 定期実行の設定
+## ステップ10: 定期実行の設定
 
-### 9-1. トリガーの追加
+### 10-1. トリガーの追加
 
 GASエディタで：
 
@@ -246,11 +285,11 @@ GASエディタで：
    - 時刻を選択: `午前9時～10時` （お好みで調整）
 4. 「保存」をクリック
 
-### 9-2. トリガーの確認
+### 10-2. トリガーの確認
 
 設定したトリガーが一覧に表示されます。翌日の指定時刻に自動実行されます。
 
-## ステップ10: 運用開始
+## ステップ11: 運用開始
 
 これで設定は完了です。以下のポイントを確認してください：
 
