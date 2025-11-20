@@ -87,7 +87,7 @@ export class ConfigManager {
     const defaultConfig = [
       ['RSS_FEED_URL', 'https://www.socialmediatoday.com/feeds/news/', 'RSSフィードのURL'],
       ['SHEET_NAME', '記事一覧', '記事を保存するシート名'],
-      ['FILTER_KEYWORDS', 'social media,marketing,\\bX\\b,instagram,facebook,tiktok', 'フィルタリングキーワード（カンマ区切り、大文字小文字を区別しない、単語境界マッチングは\\bX\\bの形式で指定）'],
+      ['FILTER_KEYWORDS', 'social media,marketing,\\bX\\b,instagram,facebook,tiktok', 'フィルタリングキーワード（カンマ区切り、大文字小文字を区別しない、単語として検索する場合は\\bX\\bの形式で指定）'],
       ['MAX_ARTICLE_AGE_DAYS', '7', '取得する記事の最大経過日数'],
       ['SLACK_WEBHOOK_URL', '※スクリプトプロパティから読み取り', '【重要】値はスプレッドシートではなくスクリプトプロパティに設定してください'],
       ['ERROR_SLACK_WEBHOOK_URL', '※スクリプトプロパティから読み取り', '【重要】値はスプレッドシートではなくスクリプトプロパティに設定してください（省略時はエラー通知を送信しません）'],

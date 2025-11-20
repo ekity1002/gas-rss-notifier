@@ -219,9 +219,9 @@ GASエディタから、またはGoogle Driveからスプレッドシートを�
 **注意**: `SLACK_WEBHOOK_URL`、`ERROR_SLACK_WEBHOOK_URL`、`OPENAI_API_KEY`は、スプレッドシートには設定せず、ステップ7で設定したスクリプトプロパティから読み取られます。
 
 **フィルタキーワードの設定方法**:
-- **通常のキーワード**: 部分一致で検索されます
+- **通常の検索**: 部分一致で検索されます
   - 例: `instagram` → "Instagram features"や"#instagram"などにマッチ
-- **単語境界マッチング**: `\b`で囲むと独立した単語のみマッチします
+- **単語として検索**: `\b`で囲むと独立した単語のみマッチします
   - 例: `\bX\b` → "X platform"や"on X"にはマッチしますが、"Experience"や"Explore"にはマッチしません
   - SNSの"X"（旧Twitter）を検索する際に便利です
 
