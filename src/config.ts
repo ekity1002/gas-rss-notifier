@@ -60,6 +60,7 @@ export class ConfigManager {
       summaryType: (configMap['SUMMARY_TYPE'] === 'openai' ? 'openai' : 'simple') as 'simple' | 'openai',
       openaiApiKey: openaiApiKey,
       openaiModel: configMap['OPENAI_MODEL'] || 'gpt-4o-mini',
+      openaiReasoningEffort: configMap['OPENAI_REASONING_EFFORT'] || 'minimal',
     };
 
     return this.config;
@@ -96,6 +97,7 @@ export class ConfigManager {
       ['SUMMARY_TYPE', 'openai', '要約タイプ（simple/openai）'],
       ['OPENAI_API_KEY', '※スクリプトプロパティから読み取り', '【重要】値はスプレッドシートではなくスクリプトプロパティに設定してください'],
       ['OPENAI_MODEL', 'gpt-4o-mini', 'OpenAIモデル名（gpt-4o-mini, gpt-4o等）'],
+      ['OPENAI_REASONING_EFFORT', 'minimal', 'OpenAI推論レベル（none, minimal, low, medium, high）GPT-5系推論モデルで使用'],
     ];
 
     sheet.getRange(1, 1, 1, 3).setValues(headers);

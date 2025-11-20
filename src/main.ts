@@ -31,8 +31,8 @@ function main(): void {
     // 設定に応じて要約エンジンを選択
     let summarizer: ISummarizer;
     if (config.summaryType === 'openai' && config.openaiApiKey) {
-      console.log(`要約エンジン: OpenAI (${config.openaiModel})`);
-      summarizer = new LLMSummarizer(config.openaiApiKey, config.openaiModel);
+      console.log(`要約エンジン: OpenAI (${config.openaiModel}, reasoning_effort: ${config.openaiReasoningEffort})`);
+      summarizer = new LLMSummarizer(config.openaiApiKey, config.openaiModel, config.openaiReasoningEffort);
     } else {
       if (config.summaryType === 'openai' && !config.openaiApiKey) {
         console.warn('OpenAI API Keyが設定されていません。SimpleSummarizerを使用します。');

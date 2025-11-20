@@ -189,6 +189,7 @@ GASエディタで時間トリガーを設定します：
 | SUMMARY_MAX_LENGTH | 200 | 要約の最大文字数（simpleモード時） |
 | SUMMARY_TYPE | openai | 要約タイプ（simple/openai） |
 | OPENAI_MODEL | gpt-4o-mini | OpenAIモデル名（gpt-4o-mini, gpt-4o等） |
+| OPENAI_REASONING_EFFORT | minimal | OpenAI推論レベル（none, minimal, low, medium, high） |
 
 ## 機能詳細
 

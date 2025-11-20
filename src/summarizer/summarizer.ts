@@ -69,11 +69,13 @@ export class SimpleSummarizer implements ISummarizer {
 export class LLMSummarizer implements ISummarizer {
   private apiKey: string;
   private model: string;
+  private reasoningEffort: string;
   private endpoint: string;
 
-  constructor(apiKey: string, model: string = 'gpt-4o-mini') {
+  constructor(apiKey: string, model: string = 'gpt-4o-mini', reasoningEffort: string = 'minimal') {
     this.apiKey = apiKey;
     this.model = model;
+    this.reasoningEffort = reasoningEffort;
     this.endpoint = 'https://api.openai.com/v1/chat/completions';
   }
 
@@ -125,8 +127,9 @@ URL: ${article.link}
    * OpenAI APIを呼び出す
    */
   private callOpenAI(prompt: string): string {
-    // GPT-5系などの新しいモデルではtemperatureパラメータがサポートされない場合があるため、
-    // デフォルト値を使用する
+    // GPT-5系推論モデル用の最適なパラメータ設定
+    // - reasoning_effort: 設定値に応じて推論レベルを調整
+    // - max_completion_tokens: 推論トークン + 出力トークンの合計上限
     const payload: any = {
       model: this.model,
       messages: [
@@ -135,7 +138,8 @@ URL: ${article.link}
           content: prompt,
         },
       ],
-      max_completion_tokens: 1000,
+      max_completion_tokens: 4000,
+      reasoning_effort: this.reasoningEffort,  // 設定シートから読み取った値を使用
     };
 
     const options: GoogleAppsScript.URL_Fetch.URLFetchRequestOptions = {
@@ -161,7 +165,18 @@ URL: ${article.link}
       throw new Error('OpenAI APIからの応答が空です');
     }
 
-    return jsonResponse.choices[0].message.content;
+    const content = jsonResponse.choices[0].message?.content;
+
+    // GPT-5推論モデルの場合、contentが空になることがある
+    if (!content || content.trim() === '') {
+      console.warn('OpenAI APIのレスポンスcontentが空です。レスポンス全体:', JSON.stringify(jsonResponse));
+      console.warn('使用モデル:', this.model);
+      console.warn('max_completion_tokens:', payload.max_completion_tokens);
+      console.warn('reasoning_effort:', payload.reasoning_effort);
+      throw new Error('OpenAI APIから有効なコンテンツが返されませんでした。推論モデルの場合、max_completion_tokensを増やしてください。');
+    }
+
+    return content;
   }
 
   /**
