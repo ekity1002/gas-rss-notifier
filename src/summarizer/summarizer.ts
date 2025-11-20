@@ -125,7 +125,9 @@ URL: ${article.link}
    * OpenAI APIを呼び出す
    */
   private callOpenAI(prompt: string): string {
-    const payload = {
+    // GPT-5系などの新しいモデルではtemperatureパラメータがサポートされない場合があるため、
+    // デフォルト値を使用する
+    const payload: any = {
       model: this.model,
       messages: [
         {
@@ -133,7 +135,6 @@ URL: ${article.link}
           content: prompt,
         },
       ],
-      temperature: 0.7,
       max_completion_tokens: 1000,
     };
 
