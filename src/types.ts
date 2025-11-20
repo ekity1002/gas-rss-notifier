@@ -15,7 +15,8 @@ export interface RSSArticle {
 export interface ArticleRecord extends RSSArticle {
   notified: boolean;     // 通知済みフラグ
   notifiedAt?: Date;     // 通知日時
-  summary?: string;      // 要約
+  summary?: string;      // 要約（後方互換性のため保持）
+  structuredSummary?: ArticleSummaryStructured;  // 構造化要約
 }
 
 /**
@@ -62,4 +63,16 @@ export interface FilterCriteria {
 export interface SlackMessage {
   text: string;
   blocks?: any[];
+}
+
+/**
+ * Structured Output: 記事要約の構造化データ
+ */
+export interface ArticleSummaryStructured {
+  summary: {
+    keyPoints: string[];  // 重要なポイントを箇条書きで
+  };
+  snsImpact: {
+    impacts: string[];    // SNS運営への影響を箇条書きで
+  };
 }

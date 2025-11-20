@@ -42,7 +42,7 @@ export class SlackNotifier {
   }
 
   /**
-   * Slackメッセージを構築
+   * Slackメッセージを構築（Structured Output対応）
    */
   private buildMessage(article: ArticleRecord): SlackMessage {
     const blocks = [
@@ -72,8 +72,37 @@ export class SlackNotifier {
       },
     ];
 
-    // 要約がある場合は追加
-    if (article.summary) {
+    // 構造化要約がある場合は、テンプレートで整形して追加
+    if (article.structuredSummary) {
+      const { summary, snsImpact } = article.structuredSummary;
+
+      // 要約セクション
+      const summaryText = summary.keyPoints
+        .map(point => `• ${point}`)
+        .join('\n');
+
+      blocks.push({
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `*📝 要約*\n${summaryText}`,
+        },
+      });
+
+      // SNS運営への影響セクション
+      const impactText = snsImpact.impacts
+        .map(impact => `• ${impact}`)
+        .join('\n');
+
+      blocks.push({
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `*💡 SNS運営に影響しそうなポイント*\n${impactText}`,
+        },
+      });
+    } else if (article.summary) {
+      // 後方互換性: 旧形式の要約がある場合
       blocks.push({
         type: 'section',
         text: {
@@ -82,6 +111,7 @@ export class SlackNotifier {
         },
       });
     } else if (article.description) {
+      // 要約がない場合は記事の説明を表示
       blocks.push({
         type: 'section',
         text: {
