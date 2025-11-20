@@ -210,13 +210,25 @@ GASエディタから、またはGoogle Driveからスプレッドシートを�
 | 設定キー | 設定する値 | 備考 |
 |---------|----------|------|
 | RSS_FEED_URL | `https://www.socialmediatoday.com/feeds/news/` | またはお好みのRSS URL |
-| FILTER_KEYWORDS | `social media,marketing,instagram` | 関連キーワードをカンマ区切りで |
+| FILTER_KEYWORDS | `social media,marketing,\bX\b,instagram` | 関連キーワードをカンマ区切りで（詳細は下記参照） |
 | MAX_ARTICLE_AGE_DAYS | `7` | 過去何日分の記事を取得するか |
 | SUMMARY_ENABLED | `true` | 要約機能を使うか |
 | SUMMARY_TYPE | `openai` | 要約タイプ（`openai`または`simple`） |
 | OPENAI_MODEL | `gpt-4o-mini` | 使用するモデル（`gpt-4o-mini`, `gpt-4o`等） |
 
 **注意**: `SLACK_WEBHOOK_URL`、`ERROR_SLACK_WEBHOOK_URL`、`OPENAI_API_KEY`は、スプレッドシートには設定せず、ステップ7で設定したスクリプトプロパティから読み取られます。
+
+**フィルタキーワードの設定方法**:
+- **通常のキーワード**: 部分一致で検索されます
+  - 例: `instagram` → "Instagram features"や"#instagram"などにマッチ
+- **単語境界マッチング**: `\b`で囲むと独立した単語のみマッチします
+  - 例: `\bX\b` → "X platform"や"on X"にはマッチしますが、"Experience"や"Explore"にはマッチしません
+  - SNSの"X"（旧Twitter）を検索する際に便利です
+
+**設定例**:
+```
+FILTER_KEYWORDS: social media,marketing,\bX\b,instagram,facebook,tiktok
+```
 
 **エラー通知チャネルについて**:
 - `ERROR_SLACK_WEBHOOK_URL`を設定すると、システムエラーを別チャネルに通知できます
