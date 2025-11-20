@@ -45,6 +45,7 @@ export interface AppConfig {
   // OpenAI設定
   openaiApiKey: string;
   openaiModel: string;
+  openaiReasoningEffort: string;  // 推論レベル（none, minimal, low, medium, high）
 }
 
 /**

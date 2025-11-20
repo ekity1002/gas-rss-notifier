@@ -215,6 +215,7 @@ GASエディタから、またはGoogle Driveからスプレッドシートを�
 | SUMMARY_ENABLED | `true` | 要約機能を使うか |
 | SUMMARY_TYPE | `openai` | 要約タイプ（`openai`または`simple`） |
 | OPENAI_MODEL | `gpt-4o-mini` | 使用するモデル（`gpt-4o-mini`, `gpt-4o`等） |
+| OPENAI_REASONING_EFFORT | `minimal` | 推論レベル（`none`, `minimal`, `low`, `medium`, `high`） |
 
 **注意**: `SLACK_WEBHOOK_URL`、`ERROR_SLACK_WEBHOOK_URL`、`OPENAI_API_KEY`は、スプレッドシートには設定せず、ステップ7で設定したスクリプトプロパティから読み取られます。
 
@@ -238,6 +239,16 @@ FILTER_KEYWORDS: social media,marketing,\bX\b,instagram,facebook,tiktok
 **要約タイプについて**:
 - `openai`: OpenAI APIを使ったSNS運営視点の要約（推奨）
 - `simple`: ルールベースの簡易要約（APIキー不要）
+
+**推論レベル（OPENAI_REASONING_EFFORT）について**:
+GPT-5系推論モデルを使用する場合の推論レベルを設定します：
+- `none`: 推論なし（GPT-5.1のデフォルト、最速）
+- `minimal`: 最小限の推論（高速、低コスト）← **デフォルト・推奨**
+- `low`: 低レベルの推論（シンプルなタスク向け）
+- `medium`: 中レベルの推論（バランス型）
+- `high`: 高レベルの推論（複雑なタスク向け、低速・高コスト）
+
+記事要約のような比較的シンプルなタスクには`minimal`または`low`が最適です。
 
 ## ステップ9: 動作テスト
 

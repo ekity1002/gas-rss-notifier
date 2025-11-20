@@ -69,11 +69,13 @@ export class SimpleSummarizer implements ISummarizer {
 export class LLMSummarizer implements ISummarizer {
   private apiKey: string;
   private model: string;
+  private reasoningEffort: string;
   private endpoint: string;
 
-  constructor(apiKey: string, model: string = 'gpt-4o-mini') {
+  constructor(apiKey: string, model: string = 'gpt-4o-mini', reasoningEffort: string = 'minimal') {
     this.apiKey = apiKey;
     this.model = model;
+    this.reasoningEffort = reasoningEffort;
     this.endpoint = 'https://api.openai.com/v1/chat/completions';
   }
 
@@ -126,7 +128,7 @@ URL: ${article.link}
    */
   private callOpenAI(prompt: string): string {
     // GPT-5系推論モデル用の最適なパラメータ設定
-    // - reasoning_effort: "low" で推論トークン消費を抑えつつ高速化
+    // - reasoning_effort: 設定値に応じて推論レベルを調整
     // - max_completion_tokens: 推論トークン + 出力トークンの合計上限
     const payload: any = {
       model: this.model,
@@ -137,7 +139,7 @@ URL: ${article.link}
         },
       ],
       max_completion_tokens: 4000,
-      reasoning_effort: 'low',  // 推論を抑えてレスポンス速度向上、トークン削減
+      reasoning_effort: this.reasoningEffort,  // 設定シートから読み取った値を使用
     };
 
     const options: GoogleAppsScript.URL_Fetch.URLFetchRequestOptions = {
