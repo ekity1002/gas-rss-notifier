@@ -127,6 +127,7 @@ URL: ${article.link}
   private callOpenAI(prompt: string): string {
     // GPT-5系などの新しいモデルではtemperatureパラメータがサポートされない場合があるため、
     // デフォルト値を使用する
+    // GPT-5は推論モデルのため、推論トークンと出力トークンの両方を考慮して十分なトークン数を設定
     const payload: any = {
       model: this.model,
       messages: [
@@ -135,7 +136,7 @@ URL: ${article.link}
           content: prompt,
         },
       ],
-      max_completion_tokens: 1000,
+      max_completion_tokens: 4000,  // GPT-5の推論トークン消費を考慮して増加
     };
 
     const options: GoogleAppsScript.URL_Fetch.URLFetchRequestOptions = {
@@ -161,7 +162,17 @@ URL: ${article.link}
       throw new Error('OpenAI APIからの応答が空です');
     }
 
-    return jsonResponse.choices[0].message.content;
+    const content = jsonResponse.choices[0].message?.content;
+
+    // GPT-5推論モデルの場合、contentが空になることがある
+    if (!content || content.trim() === '') {
+      console.warn('OpenAI APIのレスポンスcontentが空です。レスポンス全体:', JSON.stringify(jsonResponse));
+      console.warn('使用モデル:', this.model);
+      console.warn('max_completion_tokens:', payload.max_completion_tokens);
+      throw new Error('OpenAI APIから有効なコンテンツが返されませんでした。推論モデルの場合、max_completion_tokensを増やしてください。');
+    }
+
+    return content;
   }
 
   /**
