@@ -131,6 +131,122 @@ describe('ArticleFilter', () => {
       expect(filtered).toHaveLength(1);
       expect(filtered[0].id).toBe('1');
     });
+
+    it('should support word boundary matching with \\b notation', () => {
+      const filter = new ArticleFilter();
+      const now = new Date();
+      const articles: RSSArticle[] = [
+        {
+          id: '1',
+          title: 'X platform updates features',
+          link: 'https://example.com/1',
+          pubDate: now,
+          description: 'The X social network announced new features.',
+        },
+        {
+          id: '2',
+          title: 'Experience the new design',
+          link: 'https://example.com/2',
+          pubDate: now,
+          description: 'Users can experience new features on the platform.',
+        },
+        {
+          id: '3',
+          title: 'Explore marketing tools',
+          link: 'https://example.com/3',
+          pubDate: now,
+          description: 'Explore new marketing tools for your business.',
+        },
+        {
+          id: '4',
+          title: 'Post on X gets viral',
+          link: 'https://example.com/4',
+          pubDate: now,
+          description: 'A post on X went viral yesterday.',
+        },
+      ];
+
+      // \\bX\\b で単語境界マッチング
+      const filtered = filter.filterArticles(articles, {
+        keywords: ['\\bX\\b'],
+        maxAgeDays: 0,
+      });
+
+      // "X"が独立した単語として現れる記事のみマッチ
+      expect(filtered).toHaveLength(2);
+      expect(filtered.map(a => a.id)).toContain('1'); // "X platform"
+      expect(filtered.map(a => a.id)).toContain('4'); // "on X"
+      expect(filtered.map(a => a.id)).not.toContain('2'); // "Experience"
+      expect(filtered.map(a => a.id)).not.toContain('3'); // "Explore"
+    });
+
+    it('should match X without word boundary as partial match', () => {
+      const filter = new ArticleFilter();
+      const now = new Date();
+      const articles: RSSArticle[] = [
+        {
+          id: '1',
+          title: 'Experience the platform',
+          link: 'https://example.com/1',
+          pubDate: now,
+          description: 'Experience new features.',
+        },
+        {
+          id: '2',
+          title: 'Post on X',
+          link: 'https://example.com/2',
+          pubDate: now,
+          description: 'A viral post.',
+        },
+      ];
+
+      // 通常の"x"は部分一致（experienceにもマッチ）
+      const filtered = filter.filterArticles(articles, {
+        keywords: ['x'],
+        maxAgeDays: 0,
+      });
+
+      expect(filtered).toHaveLength(2); // 両方マッチ
+    });
+
+    it('should support multiple keywords with mixed word boundary matching', () => {
+      const filter = new ArticleFilter();
+      const now = new Date();
+      const articles: RSSArticle[] = [
+        {
+          id: '1',
+          title: 'X and Instagram update',
+          link: 'https://example.com/1',
+          pubDate: now,
+          description: 'Both X and Instagram released updates.',
+        },
+        {
+          id: '2',
+          title: 'Experience Instagram features',
+          link: 'https://example.com/2',
+          pubDate: now,
+          description: 'Try Instagram new features.',
+        },
+        {
+          id: '3',
+          title: 'Facebook news',
+          link: 'https://example.com/3',
+          pubDate: now,
+          description: 'Facebook announces changes.',
+        },
+      ];
+
+      // \\bX\\bとinstagramを組み合わせ
+      const filtered = filter.filterArticles(articles, {
+        keywords: ['\\bX\\b', 'instagram'],
+        maxAgeDays: 0,
+      });
+
+      expect(filtered).toHaveLength(2);
+      expect(filtered.map(a => a.id)).toContain('1'); // X and Instagram
+      expect(filtered.map(a => a.id)).toContain('2'); // Instagram
+      expect(filtered.map(a => a.id)).not.toContain('3'); // Facebook
+    });
   });
 
   describe('getFilterSummary', () => {

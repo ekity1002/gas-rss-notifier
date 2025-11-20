@@ -32,15 +32,29 @@ export class ArticleFilter {
       return articles;
     }
 
-    // キーワードを小文字に変換
-    const lowerKeywords = keywords.map(k => k.toLowerCase().trim());
+    // キーワードを小文字に変換（\b記法を除く）
+    const processedKeywords = keywords.map(k => {
+      const trimmed = k.trim();
+      // \b記法の場合は大文字小文字を保持
+      if (trimmed.startsWith('\\b') && trimmed.endsWith('\\b')) {
+        return trimmed;
+      }
+      return trimmed.toLowerCase();
+    });
 
     return articles.filter(article => {
       const searchText = `${article.title} ${article.description}`.toLowerCase();
 
       // いずれかのキーワードにマッチすればOK
-      return lowerKeywords.some(keyword => {
-        if (keyword.includes(' ')) {
+      return processedKeywords.some(keyword => {
+        // \b記法による単語境界マッチング
+        if (keyword.startsWith('\\b') && keyword.endsWith('\\b')) {
+          // \bを除去してパターンを取得
+          const pattern = keyword.slice(2, -2);
+          // 単語境界を使った正規表現でマッチング（大文字小文字を区別しない）
+          const regex = new RegExp(`\\b${this.escapeRegExp(pattern)}\\b`, 'i');
+          return regex.test(searchText);
+        } else if (keyword.includes(' ')) {
           // スペースを含むキーワードはフレーズマッチ
           return searchText.includes(keyword);
         } else {
@@ -49,6 +63,13 @@ export class ArticleFilter {
         }
       });
     });
+  }
+
+  /**
+   * 正規表現で使用される特殊文字をエスケープ
+   */
+  private escapeRegExp(text: string): string {
+    return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 
   /**

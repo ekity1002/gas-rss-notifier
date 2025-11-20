@@ -209,6 +209,19 @@ GASエディタで時間トリガーを設定します：
 - キーワードマッチング（タイトル・説明文）
 - 公開日時による絞り込み
 - 柔軟なフィルタ条件設定
+- 単語として検索する機能
+
+**キーワードマッチングの種類**:
+- **通常の検索**: `instagram` → "Instagram"や"instagram"にマッチ（部分一致）
+- **単語として検索**: `\bX\b` → "X"が独立した単語の場合のみマッチ
+  - ✅ マッチ: "X platform", "on X", "X and Instagram"
+  - ❌ 非マッチ: "Experience", "Explore", "eXample"
+
+**使用例**:
+```
+FILTER_KEYWORDS: social media,marketing,\bX\b,instagram,tiktok
+```
+上記の設定で、"X"（旧Twitter）を単語として検索しつつ、"experience"などの単語内の"x"を除外できます。
 
 ### 要約生成
 
