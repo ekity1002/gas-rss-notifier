@@ -50,7 +50,7 @@ export class SlackNotifier {
         type: 'header',
         text: {
           type: 'plain_text',
-          text: '📰 新着記事',
+          text: '📰 新着ニュース',
           emoji: true,
         },
       },
@@ -126,7 +126,7 @@ export class SlackNotifier {
     });
 
     return {
-      text: `新着記事: ${article.title}`,
+      text: `新着ニュース: ${article.title}`,
       blocks: blocks,
     };
   }
