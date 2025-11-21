@@ -42,7 +42,7 @@ export class SlackNotifier {
   }
 
   /**
-   * Slackメッセージを構築
+   * Slackメッセージを構築（Structured Output対応）
    */
   private buildMessage(article: ArticleRecord): SlackMessage {
     const blocks = [
@@ -50,7 +50,7 @@ export class SlackNotifier {
         type: 'header',
         text: {
           type: 'plain_text',
-          text: '📰 新着記事',
+          text: '📰 新着ニュース',
           emoji: true,
         },
       },
@@ -72,8 +72,37 @@ export class SlackNotifier {
       },
     ];
 
-    // 要約がある場合は追加
-    if (article.summary) {
+    // 構造化要約がある場合は、テンプレートで整形して追加
+    if (article.structuredSummary) {
+      const { summary, newsPoints } = article.structuredSummary;
+
+      // 要約セクション
+      const summaryText = summary.keyPoints
+        .map(point => `• ${point}`)
+        .join('\n');
+
+      blocks.push({
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `*📝 要約*\n${summaryText}`,
+        },
+      });
+
+      // ニュースのポイントセクション
+      const newsPointsText = newsPoints.points
+        .map(point => `• ${point}`)
+        .join('\n');
+
+      blocks.push({
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `*💡 ニュースのポイント*\n${newsPointsText}`,
+        },
+      });
+    } else if (article.summary) {
+      // 後方互換性: 旧形式の要約がある場合
       blocks.push({
         type: 'section',
         text: {
@@ -82,6 +111,7 @@ export class SlackNotifier {
         },
       });
     } else if (article.description) {
+      // 要約がない場合は記事の説明を表示
       blocks.push({
         type: 'section',
         text: {
@@ -96,7 +126,7 @@ export class SlackNotifier {
     });
 
     return {
-      text: `新着記事: ${article.title}`,
+      text: `新着ニュース: ${article.title}`,
       blocks: blocks,
     };
   }
