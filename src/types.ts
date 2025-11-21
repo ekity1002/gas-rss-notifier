@@ -70,9 +70,9 @@ export interface SlackMessage {
  */
 export interface ArticleSummaryStructured {
   summary: {
-    keyPoints: string[];  // 重要なポイントを箇条書きで
+    keyPoints: string[];  // 記事の重要なポイントを箇条書きで
   };
-  snsImpact: {
-    impacts: string[];    // SNS運営への影響を箇条書きで
+  newsPoints: {
+    points: string[];    // 各役職の観点から見たニュースのポイントを箇条書きで
   };
 }

@@ -74,7 +74,7 @@ export class SlackNotifier {
 
     // 構造化要約がある場合は、テンプレートで整形して追加
     if (article.structuredSummary) {
-      const { summary, snsImpact } = article.structuredSummary;
+      const { summary, newsPoints } = article.structuredSummary;
 
       // 要約セクション
       const summaryText = summary.keyPoints
@@ -89,16 +89,16 @@ export class SlackNotifier {
         },
       });
 
-      // SNS運営への影響セクション
-      const impactText = snsImpact.impacts
-        .map(impact => `• ${impact}`)
+      // ニュースのポイントセクション
+      const newsPointsText = newsPoints.points
+        .map(point => `• ${point}`)
         .join('\n');
 
       blocks.push({
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `*💡 SNS運営に影響しそうなポイント*\n${impactText}`,
+          text: `*💡 ニュースのポイント*\n${newsPointsText}`,
         },
       });
     } else if (article.summary) {
