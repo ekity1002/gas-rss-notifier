@@ -256,7 +256,7 @@ export class LLMSummarizer implements ISummarizer {
       .map((point, index) => `${index + 1}. ${point}`)
       .join('\n');
 
-    return `【要約】\n${summaryText}\n\n💡ニュースのポイント\n${newsPointsText}`;
+    return `${summaryText}\n\n💡ニュースのポイント\n${newsPointsText}`;
   }
 }
 
